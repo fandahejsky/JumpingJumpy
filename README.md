@@ -8,3 +8,4 @@ Hra od Kryštofa a Franty
 Lmao 
 LOLOLOLOLOLOLOLOLOLOLOLOLOLOLOL
 >>>>>>> 52af9b69e9a815229445c1be15df93e4e4eaac50
+asegaesgeaqgewsa
