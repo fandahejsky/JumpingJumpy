@@ -6,55 +6,54 @@ public class Player : MonoBehaviour
 {
     [SerializeField]
     private float moveSpeed = 5f; //Rychlost pohybu
-    [SerializeField]
-    private float gravity = 9.81f; //Gravitace
-    [SerializeField]
-    private float jumpSpeed = 3.5f; //Výška skoku
-   /* [SerializeField]
-    private float doubleJumpMultiplier = 0.5f;*/ //Double Jump
+    public float gravity = -9.81f;
+    public float jumpHeight = 3f;
 
-    private CharacterController controller;
 
-    private float directionY;
+    public CharacterController controller;
+    public Transform cam;
+    float turnSmooth;
+    float turnSmoothTime = 0.1f;
+    public Transform groundCheck;
+    public float groundDistance = 0.1f;
+    public LayerMask groundMask;
+    
 
-   // private bool canDoubleJump = false; //Double Jump
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        controller = GetComponent<CharacterController>();
-    }
+    Vector3 velocity;
+    bool isGrounded;
 
     // Update is called once per frame
     void Update()
     {
-        float horizontalInput = Input.GetAxis("Horizontal");//Ovládání pohybu
-        float verticalInput = Input.GetAxis("Vertical");//Ovládání pohybu
-
-        Vector3 direction = new Vector3(horizontalInput, 0, verticalInput);//Smìr pohybu
-
-        if (controller.isGrounded) //Zajištìní aby hráè mohl skákat pouze když je na zemi
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        if (isGrounded && velocity.y < 0)//resetování aplikovani gravitace
         {
-
-            if (Input.GetButtonDown("Jump")) //Skákání
-            {
-               // canDoubleJump = true; //Double Jump
-                directionY = jumpSpeed;
-            }
+            velocity.y = -2f;
         }
-       /* else //Double Jump
+        float horizontalInput = Input.GetAxisRaw("Horizontal");//Ovladani pohybu
+        float verticalInput = Input.GetAxisRaw("Vertical");//Ovladani pohybu
+
+        Vector3 direction = new Vector3(horizontalInput, 0f, verticalInput).normalized;//Smer pohybu
+        velocity.y += gravity * Time.deltaTime;//Usazeni zakladni gravitace nezavisle na fps
+        controller.Move(velocity * Time.deltaTime);//Aplikovani gravitace (Funguje tak ze aplikuje negativni silu na y axis tak proto tam je nahore ten reset jinak by se to aplikovalo porad a kdybys vyskocil tak by te to hned hodilo dolu)
+        if (Input.GetButtonDown("Jump") && isGrounded)//Skakani
         {
-            if (Input.GetButtonDown("Jump") && canDoubleJump==true)
-            {
-                directionY = jumpSpeed * doubleJumpMultiplier;
-                canDoubleJump = false;
-            }
-        }*/ 
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);//Vypocet skoku a nasledne provedeni
+        }
+        if (direction.magnitude >= 0.1f) //Pohyb hrace zavisle na kamere
+        {
+            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
+            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmooth, turnSmoothTime);
+            transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
-        directionY-= gravity * Time.deltaTime;//Gravitace
+            Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+            controller.Move(moveDir.normalized * moveSpeed * Time.deltaTime);
 
-        direction.y = directionY;
+            
 
-        controller.Move(direction * moveSpeed * Time.deltaTime); //Pohyb 
+            
+        }
+
     }
 }
