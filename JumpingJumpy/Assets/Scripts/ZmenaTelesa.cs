@@ -8,6 +8,11 @@ public class ZmenaTelesa : MonoBehaviour
    public GameObject sphere; 
     public GameObject cube;
     public GameObject rectangle;
+    public GameObject cam1;
+    public GameObject cam2;
+    public GameObject cam3;
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -22,8 +27,12 @@ public class ZmenaTelesa : MonoBehaviour
         //zmìna na kostku
         if (Input.GetKeyDown(KeyCode.F))
         {
+            cam1.SetActive(true);
+            cam2.SetActive(false);
+            cam3.SetActive(false);
             if (sphere.active == true)
             {
+                
                 cube.transform.position = sphere.transform.position;
                 sphere.SetActive(false);
                 cube.SetActive(true);
@@ -34,14 +43,20 @@ public class ZmenaTelesa : MonoBehaviour
                 cube.transform.position = rectangle.transform.position;
                 rectangle.SetActive(false);
                 cube.SetActive(true);
+
             }
+
 
         }
         //Zmìna na kouli
         if (Input.GetKeyDown(KeyCode.G))
         {
-            if(cube.active == true)
+            cam1.SetActive(false);
+            cam2.SetActive(true);
+            cam3.SetActive(false);
+            if (cube.active == true)
             {
+                
                 sphere.transform.position = cube.transform.position;
                 cube.SetActive(false);
                 sphere.SetActive(true);
@@ -56,7 +71,10 @@ public class ZmenaTelesa : MonoBehaviour
         ///zmìna na obdélník
         if (Input.GetKeyDown(KeyCode.H))
         {
-            if(cube.active == true)
+            cam1.SetActive(false);
+            cam2.SetActive(false);
+            cam3.SetActive(true);
+            if (cube.active == true)
             {
                 rectangle.transform.position = cube.transform.position;
                 cube.SetActive(false);

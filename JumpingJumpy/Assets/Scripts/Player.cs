@@ -17,7 +17,8 @@ public class Player : MonoBehaviour
     public Transform groundCheck;
     public float groundDistance = 0.1f;
     public LayerMask groundMask;
-    
+
+
 
 
     Vector3 velocity;
@@ -48,11 +49,7 @@ public class Player : MonoBehaviour
             transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-            controller.Move(moveDir.normalized * moveSpeed * Time.deltaTime);
-
-            
-
-            
+            controller.Move(moveDir.normalized * moveSpeed * Time.deltaTime);            
         }
 
     }
